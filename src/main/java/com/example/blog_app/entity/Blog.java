@@ -1,6 +1,7 @@
 package com.example.blog_app.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Blog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	
 	private String title;
 	private String content;
@@ -30,8 +34,10 @@ public class Blog {
 	@CreationTimestamp
 	@Column(updatable = false)
 	private LocalDateTime createdAt; 
-	@PrePersist
-	public void onCreate() {
-		this.createdAt = LocalDateTime.now();
-	}
+	
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 }

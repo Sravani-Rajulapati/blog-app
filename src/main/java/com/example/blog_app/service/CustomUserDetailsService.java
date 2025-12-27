@@ -1,6 +1,9 @@
 package com.example.blog_app.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,7 +13,7 @@ import com.example.blog_app.entity.User;
 import com.example.blog_app.repository.UserRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
-	@Autowired
+	@Autowired                                  
 	private UserRepository userRepository;
 	
 	@Override
@@ -19,10 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService{
 		User user=userRepository.findByUsername(username)
 				.orElseThrow(()->new UsernameNotFoundException("User not found"));
 				
-		return org.springframework.security.core.userdetails.User
-				.withUsername(user.getUsername())
-				.password(user.getPassword())
-				.roles(user.getRole())
-				.build();
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),
+				user.getPassword(),
+				List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())));
 	}
 }
